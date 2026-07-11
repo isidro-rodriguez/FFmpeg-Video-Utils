@@ -132,21 +132,17 @@ def hms_a_segundos(texto):
 
     return h * 3600 + m * 60 + s
 
-# Función para validar formato HH:MM:SS
+# Función para validar punto de corte en formato HH:MM:SS
 def validar_hora(tiempo, duracion):
 
     h, m, s = map(int, tiempo.split(":"))
-    if h < 0 or m < 0 or m >= 60 or s < 0 or s >= 60: 
+    if h < 0 or m < 0 or m >= 60 or s < 0 or s >= 60 or s >= duracion: 
         return False
     try:
         s = hms_a_segundos(tiempo)
     except:
         return False
-    if s >= duracion:
-        return False
     return True
-
-
 
 # =============================================================================
 # Funciones principales
@@ -162,38 +158,31 @@ def mostrar_menu(num_videos):
     print("          FFmpeg Video Utils")
     print("========================================\n")
 
-    if num_videos != 0:
-        print("1. Recortar")
-        print("2. Reducir resolución")
-    else:
-        mostrar_desactivado("1. Recortar vídeo(s)")
-        mostrar_desactivado("2. Reducir resolución")
+    print("1. Recortar")
+    print("2. Reducir resolución")
+    print("3. Rotar")
         
     if num_videos == 1:
-        print("3. Dividir vídeo en segmentos")
+        print("3. Dividir en segmentos")
     else:
-        mostrar_desactivado("3. Dividir vídeo en segmentos")
+        mostrar_desactivado("3. Dividir en segmentos")
 
     if num_videos > 1:
-        print("4. Unir vídeos")
+        print("4. Unir múltiples vídeos")
     else:
-        mostrar_desactivado("4. Unir vídeos")
+        mostrar_desactivado("4. Unir múltiples vídeos")
 
     print("----------------------------------------")
     print("Q. Salir\n")
 
 # ------------------------------------------------------------
-# Recortar vídeos
+# 1. Recortar vídeos
 # ------------------------------------------------------------
 # Se recortan píxeles de los bordes del vídeo.
 # Se pide al usuario que introduzca cuatro números separados por comas, que
 # representan los píxeles a eliminar de la izquierda, derecha, arriba y abajo.
 
 def recortar(videos):
-
-    if (len(videos) == 0):
-        mostrar_error("No hay vídeos para recortar.")
-        return
 
     print("\n=== RECORTAR VÍDEOS ===\n")
 
@@ -258,7 +247,7 @@ def recortar(videos):
         mostrar_exito(f"{video}: recortado a {nuevo_ancho}x{nuevo_alto}.")
     
 # ------------------------------------------------------------
-# Reducir resolución
+# 2. Reducir resolución
 # ------------------------------------------------------------
 
 def reducir_resolucion(videos):
@@ -319,7 +308,49 @@ def reducir_resolucion(videos):
             mostrar_exito(f"{video}: reduciendo a {altura}...")
 
 # ------------------------------------------------------------
-# Dividir vídeo en segmentos
+# 3. Rotar vídeos
+# ------------------------------------------------------------
+
+def rotar(videos):
+
+    print("\n=== ROTAR VÍDEOS ===\n")
+
+    print("1. 90°")
+    print("2. 180°")
+    print("3. 270°")
+
+    opcion = input("Seleccione la rotación: ").strip()
+
+    match opcion:
+        case "1":
+            filtro = "transpose=1"
+        case "2":
+            filtro = "transpose=2,transpose=2"
+        case "3":
+            filtro = "transpose=2"
+        case _:
+            mostrar_error("Opción no válida.")
+            return
+
+    for video in videos:
+
+        nombre, extension = os.path.splitext(video)
+        salida = f"{nombre}_rotado{extension}"
+
+        comando = [
+            "ffmpeg",
+            "-i", video,
+            "-vf", filtro,
+            "-c:a", "copy",
+            salida
+        ]
+
+        subprocess.run(comando)
+
+        mostrar_exito(f"{video}: rotado.")
+
+# ------------------------------------------------------------
+# 4. Dividir vídeo en segmentos
 # ------------------------------------------------------------
 
 def dividir_video(videos):
@@ -361,9 +392,9 @@ def dividir_video(videos):
 
     mostrar_exito("\nVídeo dividido.")
 
-# =============================================================================
-# Unir vídeos
-# =============================================================================
+# ------------------------------------------------------------
+# 5. Unir vídeos
+# ------------------------------------------------------------
 
 def unir(videos):
 
@@ -418,6 +449,11 @@ def main():
     # Recoger argumentos
     videos = sys.argv[1:]
 
+    if (len(videos) == 0):
+        mostrar_error("No hay vídeos con los que trabajar.")
+        mostrar_info("Uso: python ffmpeg-utils.py video1.mp4 video2.mp4 ...")
+        exit(1)
+
     # Comprobar existencia
     for video in videos:
         if not os.path.isfile(video):
@@ -437,14 +473,17 @@ def main():
 
             case "2":
                 reducir_resolucion(videos)
+            
+            case "3":
+                rotar(videos)
 
-            case "3":        
+            case "4":        
                 if len(videos) != 1:
                     mostrar_error("ERROR: Esta operación sólo admite un vídeo.")
                     return
                 dividir_video(videos)
 
-            case "4":        
+            case "5":        
                 if len(videos) < 2:
                     mostrar_error("ERROR: Esta operación sólo se admite para múltipless vídeos.")            
                 unir(videos)
