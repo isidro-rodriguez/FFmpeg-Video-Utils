@@ -12,28 +12,29 @@ def recortar(videos):
 
     print("\n=== RECORTAR VÍDEOS ===\n")
 
-    entrada = input(
-        "Píxeles a eliminar (izquierda, derecha, arriba, abajo): "
-    )
+    while True:
+        entrada = input(
+            "Píxeles a eliminar (izquierda, derecha, arriba, abajo): "
+        )
 
-    try:
-        valores = entrada.split(",")
+        try:
+            valores = entrada.split(",")
 
-        if len(valores) != 4:
-            raise ValueError
+            if len(valores) != 4:
+                raise ValueError
 
-        izquierda, derecha, arriba, abajo = map(int, valores)
+            izquierda, derecha, arriba, abajo = map(int, valores)
+            break
 
-    except ValueError:
-        mostrar_error("Debe introducir cuatro números separados por comas.")
-        recortar(videos)
+        except ValueError:
+            mostrar_error("Debe introducir cuatro números separados por comas.")
 
     for video in videos:
         nuevo_ancho = video["ancho"] - izquierda - derecha
         nuevo_alto = video["alto"] - arriba - abajo
 
         if nuevo_ancho <= 0 or nuevo_alto <= 0:
-            mostrar_error(f"{video}: recorte inválido.")
+            mostrar_error(f"{video['fichero']}: recorte inválido.")
             continue
 
         salida = video['nombre'] + ".cortado." + video['extension']

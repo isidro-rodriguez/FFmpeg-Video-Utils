@@ -45,7 +45,7 @@ def mostrar_menu(num_videos):
     if num_videos > 1:
         print("5. Unir múltiples vídeos")
     else:
-        mostrar_desactivado("4. Unir múltiples vídeos")
+        mostrar_desactivado("5. Unir múltiples vídeos")
 
     print("----------------------------------------")
     print("Q. Salir\n")
@@ -100,7 +100,8 @@ def main():
 
             case "5":        
                 if len(video_list) < 2:
-                    mostrar_error("ERROR: Esta operación sólo se admite para múltipless vídeos.")            
+                    mostrar_error("ERROR: Esta operación sólo se admite para múltipless vídeos.")     
+                    return       
                 unir(video_info)
 
             case "Q":

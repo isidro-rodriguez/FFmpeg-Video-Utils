@@ -48,8 +48,6 @@ def unir(videos):
         "Probablemente no tienen el mismo formato.\n" \
         "Todos deben tener el mismo códec, resolución, FPS y pistas de audio." \
         )
-        print("error")
-
 
     finally:
        os.remove(lista_txt)

@@ -88,6 +88,7 @@ def obtener_info_video(video):
 
     ruta = os.path.abspath(video)
     nombre, extension = os.path.splitext(os.path.basename(video))
+    fichero = nombre + "." + extension
     ancho, alto = obtener_resolucion(video)
     codec = obtener_codec(video)
     duracion = obtener_duracion(video)
@@ -96,6 +97,7 @@ def obtener_info_video(video):
         'ruta': ruta,
         'nombre': nombre,
         'extension': extension,
+        'fichero': fichero,
         'ancho': ancho,
         'alto': alto,
         'codec': codec,
@@ -122,10 +124,10 @@ def hms_a_segundos(texto):
 def validar_hora(tiempo, duracion):
 
     h, m, s = map(int, tiempo.split(":"))
-    if h < 0 or m < 0 or m >= 60 or s < 0 or s >= 60 or s >= duracion: 
+    if h < 0 or m < 0 or m >= 60 or s < 0 or s >= 60:
+        mostrar_error("Formato de hora inválido.")
         return False
-    try:
-        s = hms_a_segundos(tiempo)
-    except:
+    if hms_a_segundos(tiempo) >= duracion:
+        mostrar_error("El punto de corte es igual o mayor a la duración del vídeo.")
         return False
     return True
