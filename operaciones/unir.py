@@ -43,11 +43,11 @@ def unir(videos):
         subprocess.run(comando, check=True)
         mostrar_exito(f"\nVídeo generado: {salida}")
     except subprocess.CalledProcessError:
-        #mostrar_error(
-        #"Error al unir los vídeos.\n" \
-        #"Probablemente no tienen el mismo formato.\n" \
-        #"Todos deben tener el mismo códec, resolución, FPS y pistas de audio." \
-        #)
+        mostrar_error(
+        "Error al unir los vídeos.\n" \
+        "Probablemente no tienen el mismo formato.\n" \
+        "Todos deben tener el mismo códec, resolución, FPS y pistas de audio." \
+        )
         print("error")
 
 

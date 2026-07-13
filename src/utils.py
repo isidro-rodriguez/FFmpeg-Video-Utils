@@ -86,13 +86,14 @@ def obtener_duracion(video):
 # Función para obtener información completa de un vídeo
 def obtener_info_video(video):
 
+    ruta = os.path.abspath(video)
+    nombre, extension = os.path.splitext(os.path.basename(video))
     ancho, alto = obtener_resolucion(video)
     codec = obtener_codec(video)
     duracion = obtener_duracion(video)
-    nombre, extension = os.path.splitext(os.path.basename(video))
 
     return {
-        'ruta': os.path.abspath(video),
+        'ruta': ruta,
         'nombre': nombre,
         'extension': extension,
         'ancho': ancho,

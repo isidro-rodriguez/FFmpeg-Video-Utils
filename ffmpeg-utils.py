@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
 
 import os
-import subprocess
 import sys
-import tempfile
 
-from src.constants import CODECS
-
-# Importar funciones utilitarias
 from src.utils import (
     mostrar_error,
     mostrar_desactivado,
