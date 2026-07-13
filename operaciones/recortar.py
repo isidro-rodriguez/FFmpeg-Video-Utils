@@ -37,7 +37,7 @@ def recortar(videos):
             mostrar_error(f"{video}: recorte inválido.")
             continue
 
-        salida = video['nombre'] + ".crop." + video['extension']
+        salida = video['nombre'] + ".cortado." + video['extension']
 
         comando = [
             "ffmpeg",

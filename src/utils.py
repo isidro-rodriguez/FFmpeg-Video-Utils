@@ -92,8 +92,7 @@ def obtener_info_video(video):
     nombre, extension = os.path.splitext(os.path.basename(video))
 
     return {
-        'ruta': video,
-        'fichero': os.path.basename(video),
+        'ruta': os.path.abspath(video),
         'nombre': nombre,
         'extension': extension,
         'ancho': ancho,
